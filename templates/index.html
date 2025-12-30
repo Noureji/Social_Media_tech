@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %} Boards {% endblock %}
+{% block container_titre %} Form Boards {% endblock %}
+
+{% block container %}
+<div class="container mt-4">
+  <div class="row g-4">
+    {% for borde in bordes %}
+    <div class="col-md-6 col-lg-4">
+
+      <div class="card board-card h-100 shadow-sm border-0">
+        <div class="card-body">
+
+          <div class="d-flex align-items-center mb-3">
+            <div class="icon-circle bg-primary text-white me-3">
+               <i class="bi bi-kanban fs-4"></i>
+            </div>
+            <h5 class="card-title mb-0">
+              <a href="{% url 'show' borde.id %}" class="text-decoration-none">
+                {{ borde.name }}
+              </a>
+            </h5>
+          </div>
+
+          <p class="card-text text-muted">
+            {{ borde.description|truncatewords:20 }}
+          </p>
+
+        </div>
+
+        <div class="card-footer bg-white border-0">
+          <a href="{% url 'show' borde.id %}" class="btn btn-outline-primary w-100">
+            View Topics
+          </a>
+        </div>
+      </div>
+
+    </div>
+    {% empty %}
+      <p class="text-muted">No boards available.</p>
+    {% endfor %}
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block title %}Login{% endblock %}
+{% block container_titre %}Login{% endblock %}
+
+{% block container %}
+<div class="container">
+  <div class="row shadow rounded overflow-hidden" style="min-height: 420px;">
+
+    <!-- IMAGE LEFT -->
+    <div class="col-md-6 p-0">
+      <img src="{% static 'image/login.jpg' %}"
+           class="w-100 h-100"
+           style="object-fit: cover;"
+           alt="Login image">
+    </div>
+
+    <!-- FORM RIGHT -->
+    <div class="col-md-6 d-flex align-items-center">
+      <form method="POST" class="w-100 px-4">
+        {% csrf_token %}
+
+        {% for elm in form %}
+          <div class="mb-3">
+            {{ elm.label_tag }}
+            {{ elm|add_class:"form-control" }}
+          </div>
+        {% endfor %}
+
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+              {{ error }}
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary w-100 mt-3">
+          Log in
+        </button>
+        <div class="text-center mt-3">
+          <a href="{% url 'signup'%}">Create a count </a>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

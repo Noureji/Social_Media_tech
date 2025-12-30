@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+
+# Django
+*.log
+*.pot
+*.mo
+*.pyc
+
+# Media files
+media/
+
+# Static collect
+staticfiles/
+
+# Secrets / Environment
+.env
+
+# OS files
+.DS_Store
+Thumbs.db

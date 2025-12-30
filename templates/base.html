@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+
+        {% endblock %}
+    </title>
+<!-- pour les icons -->
+    <link rel="stylesheet" href="{% static 'icons/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+<!-- Bootstrap JS + Popper (OBLIGATOIRE) -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <link rel="stylesheet" href="{%static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+        {% block soustitle %} 
+          <!-- pour chaque page peut etre changer les titres--> 
+        {% endblock %}
+
+        {% if user.is_authenticated %}   
+
+            {%include 'navbar.html'%}     
+
+        {%else %}
+            {%include 'navbar.html'%}
+        {%endif%}
+   
+<fieldset class="border p-2 m-2 rounded">
+  <legend class="float-none w-auto px-3 fw-bold">
+            {% block container_titre %}
+            {% endblock %}
+  </legend> 
+
+    <div class="container">
+                {% block container %}
+                {% endblock %}
+    </div>
+
+</fieldset>  
+{% include "footer.html" %}
+</body>
+
+</html>

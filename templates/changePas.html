@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %} login {% endblock %}
+{% block soustitle %} 
+{% load widget_tweaks %}                        
+{% endblock %} 
+{% block container_titre %} 
+Update Password 
+{%endblock%}
+{% block container %}     
+<form method="POST" >
+              {% csrf_token %}
+              {% for elm in form %}
+              <div class="form-group pt-3">
+              {{ elm.label_tag}}
+              {{ elm|add_class:"form-control" }} 
+              {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                  {% for error in form.non_field_errors %}
+                        {{ error }}
+              {% endfor %}
+                </div>
+              {% endif %}  
+              </div>          
+            {%endfor%}
+
+              <div class="col-auto">
+    <button type="submit" class="btn btn-primary mt-3 ">Update</button>
+              </div>          
+       </form>
+            </div>
+            
+{% endblock %}

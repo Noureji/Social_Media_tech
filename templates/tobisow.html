@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load humanize %}
+        {% block title %} page_posts {% endblock %}
+        
+                            {% block soustitle %} 
+
+                            {% endblock %} 
+          {% block container_titre %}  
+          {{board.name}}->posts_topicc -> 
+          
+          {% endblock %}              
+  {% block container %}  
+
+
+ 
+<div class="container my-5">
+
+  <!-- TOPIC CARD -->
+{%for post in posts%}
+  <div class="card topic-card mb-4">
+    <div class="card-body">
+      <div class="d-flex align-items-center mb-3">
+        <img src="https://i.pravatar.cc/50" class="rounded-circle me-3">
+        <div>
+          <h6 class="mb-0">{{user.username}} , {{user.lastname}}</h6>
+          <small class="text-muted">Posté il y a  {{post.created_at|naturaltime}} </small>
+        </div>
+      </div>
+
+      <h4 class="topic-title">{{post.message}}</h4>
+      <p class="text-muted small">
+  Dans <strong>{{ post.topic.subject }}</strong> •
+  7 commentaires
+</p>
+
+      <!-- ACTIONS -->
+      <div class="d-flex gap-3 mt-3">
+        <button class="btn btn-like">
+          <i class="bi bi-heart-fill"></i> J’adore <span>12</span>
+        </button>
+        <button class="btn btn-comment">
+          <i class="bi bi-chat-left-text"></i> Commenter
+        </button>
+      </div>
+    </div>
+  </div>
+{%endfor%}
+
+  <!-- COMMENTS -->
+  <div class="card comment-card">
+    <div class="card-body">
+      <h6 class="mb-3">Commentaires</h6>
+
+      <div class="comment">
+        <img src="https://i.pravatar.cc/40" class="rounded-circle">
+        <div>
+          <strong>Yassine</strong>
+          <p>Commence par un petit projet réel, c’est la meilleure façon 👍</p>
+        </div>
+      </div>
+
+      <div class="comment">
+        <img src="https://i.pravatar.cc/41" class="rounded-circle">
+        <div>
+          <strong>Amine</strong>
+          <p>Les Django Forms et CBV sont essentiels 💡</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+        {% endblock %}
+
+      

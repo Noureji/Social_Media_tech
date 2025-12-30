@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} page_topic {% endblock %}
+                            {% block container_titre %} 
+                            <a href="{% url 'index' %}"></a>   {{ post.name }} :
+                            {% endblock %} 
+                            
+
+{% block container %}  
+                                 {% if messages %}
+                        {% for message in messages %}
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+  </svg>
+  <div>
+    {{message}}
+  </div>
+</div>
+                        {% endfor %}
+                      {% endif %} 
+<br> 
+<div class="row g-0 bg-light position-relative">
+  
+  <div class="col-md-6 mb-md-0 p-md-4">
+    <img src="{% static 'image/photo1.jpg' %}" class="w-100" alt="...">
+  </div>
+  <div class="col-md-6 p-4 ps-md-0">
+    <h5 class="mt-0">{{post.name}}</h5>
+    <p>{{post.description}}</p>
+    <a href="{% url 'NewTobic' post.id %}">New topic</a>
+
+  </div>
+
+  <table class="table">
+    <div class="container">
+
+  <thead>
+    <tr>
+      <th scope="col" >N°</th>
+      <th scope="col">Subject</th>
+      <th scope="col">Post</th>
+      <th scope="col">Views</th>
+      <th scope="col">Create _ by </th>
+      <th scope="col">Creaate _ at</th>
+      <th scope="col">
+        New Post
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for topic in topic_of_board %}
+    <tr>
+      <th scope="row" >{{topic.id}}</th>
+      <td> <a href="{% url 'tobishow'   post.id topic.id  %}">{{topic.subject}}</a>
+        </td>
+      <th scope="col">{{ topic.posts.count }}</th>
+      <th scope="col">0</th>
+      <td>{{topic.created_by.username}}</td>
+      <td>{{topic.created_at}}</td>
+      <td>
+        <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#modal-{{ topic.id }}">
+  Create Post
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="modal-{{ topic.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">My Board  : {{ post.name }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form  method="post" action="{% url 'create_post' topic.id %}" >
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Subject</label>
+    <input type="text" class="form-control" id="id_subject"  aria-describedby="emailHelp" name="subject" value={{topic.subject}}>
+    <div id="emailHelp" class="form-text">We'll never share your name with anyone else.</div>
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Message</label>
+    <textarea class="form-control" id="id_message" name="message">
+    </textarea>
+  </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+</form>
+    </div>
+  </div>
+</div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</div>
+</table>
+</div>
+</div>
+
+{% endblock %}
+
+      

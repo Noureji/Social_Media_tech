@@ -1,0 +1,99 @@
+{% load static %}
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+  <div class="container">
+
+    <!-- LOGO -->
+    <a class="navbar-brand d-flex align-items-center" href="/">
+      <img src="{% static 'image/logo.jpg' %}" alt="Logo" height="36"
+           class="rounded-circle me-2">
+      <span class="fw-bold">My/.</span>
+    </a>
+
+    <!-- TOGGLER -->
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- NAV CONTENT -->
+    <div class="collapse navbar-collapse" id="mainNavbar">
+
+      <!-- LEFT MENU -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <li class="nav-item">
+          <a class="nav-link active" href="/">
+            <i class="bi bi-house-door-fill"></i> Home
+          </a>
+        </li>
+
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <i class="bi bi-collection-fill"></i> Boards
+          </a>
+        </li>
+        {% endif %}
+
+      </ul>
+
+      <!-- RIGHT MENU -->
+      <ul class="navbar-nav ms-auto align-items-center">
+
+        {% if user.is_authenticated %}
+        <!-- USER DROPDOWN -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center"
+             href="#" role="button" data-bs-toggle="dropdown">
+            <img src="https://i.pravatar.cc/32"
+                 class="rounded-circle me-2" alt="avatar">
+            {{ user.username }}
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end shadow">
+            <li>
+              <a class="dropdown-item" href="#">
+                <i class="bi bi-person-circle"></i> Profile
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'changePas' %}">
+                <i class="bi bi-gear-fill"></i> Change password
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item text-danger">
+                  <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+              </form>
+            </li>
+          </ul>
+        </li>
+
+        {% else %}
+        <!-- AUTH LINKS -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">
+            <i class="bi bi-box-arrow-in-right"></i> Login
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-primary ms-2" href="{% url 'signup' %}">
+            <i class="bi bi-person-plus-fill"></i> Register
+          </a>
+        </li>
+        {% endif %}
+
+      </ul>
+    </div>
+  </div>
+</nav>
