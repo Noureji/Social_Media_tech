@@ -8,7 +8,7 @@
     <a class="navbar-brand d-flex align-items-center" href="/">
       <img src="{% static 'image/logo.jpg' %}" alt="Logo" height="36"
            class="rounded-circle me-2">
-      <span class="fw-bold">My/.</span>
+      
     </a>
 
     <!-- TOGGLER -->
@@ -29,17 +29,18 @@
 
         <li class="nav-item">
           <a class="nav-link active" href="/">
-            <i class="bi bi-house-door-fill"></i> Home
+            <i class="bi bi-house-door-fill"></i> Boards
           </a>
         </li>
 
-        {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-            <i class="bi bi-collection-fill"></i> Boards
-          </a>
-        </li>
-        {% endif %}
+{% if user.is_authenticated and request.resolver_match.url_name != 'index' %}
+<li class="nav-item ">
+  <a class="nav-link active" href="#">
+    <i class="bi bi-collection-fill"></i> Topic
+  </a>
+</li>
+{% endif %}
+
 
       </ul>
 
@@ -58,7 +59,7 @@
 
           <ul class="dropdown-menu dropdown-menu-end shadow">
             <li>
-              <a class="dropdown-item" href="#">
+              <a class="dropdown-item" href="{% url 'profil'%}">
                 <i class="bi bi-person-circle"></i> Profile
               </a>
             </li>

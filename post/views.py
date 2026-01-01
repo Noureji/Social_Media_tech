@@ -53,7 +53,7 @@ def create (request,bord_id):
             created_by=request.user
 
         )
-        
+        messages.success(request, "Post created successfully")
         return redirect('show',bord_id=bord_id)
     return render(request,'NewTobic.html',{"bord_id":post})
 

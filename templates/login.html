@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 {% load static %}
+
 {% block title %}Login{% endblock %}
 {% block container_titre %}Login{% endblock %}
 
@@ -9,11 +10,13 @@
   <div class="row shadow rounded overflow-hidden" style="min-height: 420px;">
 
     <!-- IMAGE LEFT -->
-    <div class="col-md-6 p-0">
-      <img src="{% static 'image/login.jpg' %}"
-           class="w-100 h-100"
-           style="object-fit: cover;"
-           alt="Login image">
+    <div class="col-md-6 p-0 d-none d-md-block">
+      <img
+        src="{% static 'image/login.jpg' %}"
+        class="w-100 h-100"
+        style="object-fit: cover;"
+        alt="Login image"
+      >
     </div>
 
     <!-- FORM RIGHT -->
@@ -21,27 +24,50 @@
       <form method="POST" class="w-100 px-4">
         {% csrf_token %}
 
-        {% for elm in form %}
+        {% for field in form %}
           <div class="mb-3">
-            {{ elm.label_tag }}
-            {{ elm|add_class:"form-control" }}
+            {{ field.label_tag }}
+
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                {% if field.name == "username" %}
+                  <i class="bi bi-person"></i>
+                {% elif field.name == "email" %}
+                  <i class="bi bi-envelope"></i>
+                {% elif field.name == "password" %}
+                  <i class="bi bi-lock"></i>
+                {% else %}
+                  <i class="bi bi-input-cursor-text"></i>
+                {% endif %}
+              </span>
+
+              {{ field|add_class:"form-control" }}
+            </div>
+
+            {% if field.errors %}
+              <small class="text-danger">
+                {{ field.errors|striptags }}
+              </small>
+            {% endif %}
           </div>
         {% endfor %}
 
         {% if form.non_field_errors %}
           <div class="alert alert-danger">
-            {% for error in form.non_field_errors %}
-              {{ error }}
-            {% endfor %}
+            {{ form.non_field_errors }}
           </div>
         {% endif %}
 
         <button type="submit" class="btn btn-primary w-100 mt-3">
-          Log in
+          <i class="bi bi-box-arrow-in-right"></i> Log in
         </button>
-        <div class="text-center mt-3">
-          <a href="{% url 'signup'%}">Create a count </a>
-        </div>
+
+       <div class="text-center mt-4">
+                <span class="text-muted">No account?</span>
+                <a href="{% url 'signup' %}" class="fw-semibold">
+                  Create one
+                </a>
+              </div>
       </form>
     </div>
 
