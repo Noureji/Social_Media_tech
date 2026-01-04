@@ -1,93 +1,185 @@
 {% extends "base.html" %}
 {% load humanize %}
-{% block title %} page_posts {% endblock %}
-        
-                            {% block soustitle %} 
+{% load static %}
 
-                            {% endblock %} 
+{% block title %} page_posts {% endblock %}
+
 {% block container_titre %}
-<div class="topic-line d-flex align-items-center flex-wrap">
-  <!-- BOARD -->
-  <a href="{% url 'show' board.id %}" class="board-link">
-    <i class="bi bi-collection-fill me-1"></i>
-    {{ board.name }}
+<div class="topic-line d-flex align-items-center flex-wrap mb-3">
+  <a href="{% url 'show' board.id %}" class="board-link text-decoration-none">
+    <i class="bi bi-collection-fill me-1"></i> {{ board.name }}
   </a>
 
-  <!-- SEPARATOR -->
-    <span class="separator mx-2">›</span>
+  <span class="mx-2">›</span>
 
-      <!-- TOPIC -->
-          <i class="bi bi-chat-left-text-fill text-dark me-2"></i>
-          {{ tobic.subject }}
-          <span class="separator mx-2">›</span>
-              <span class="badge bg-warning text-dark ms-2">
-                  {{ posts.count }} Posts
-          </span>
-    </span>
+  <i class="bi bi-chat-left-text-fill me-1"></i>
+  {{ tobic.subject }}
+
+  <span class="badge bg-warning text-dark ms-2">
+    {{ posts.count }} Posts
+  </span>
 </div>
 {% endblock %}
 
 {% block container %}
-<div class="container my-5">
+<div class="container my-4">
+
 {% for post in posts %}
-      <div class="card mb-4 
-          {% if post.created_by == user %}
-            border-success shadow-sm
+<div class="card mb-4 {% if post.created_by == user %}border-success shadow-sm{% endif %}">
+
+  <!-- POST BODY -->
+  <div class="card-body">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="d-flex align-items-center">
+        <img
+          {% if post.created_by.profile.avatar %}
+            src="{{ post.created_by.profile.avatar.url }}"
           {% else %}
-            border-0
-          {% endif %}">
-
-        <div class="card-body">
-
-        <!-- HEADER -->
-        <div class="d-flex justify-content-between align-items-start mb-3">
-          <div class="d-flex align-items-center">
-            <img src="https://i.pravatar.cc/50" class="rounded-circle me-3">
-            <div>
-              <h6 class="mb-0">
-                {{ post.created_by.username }}
-              </h6>
-              <small class="text-muted">
-                Posté {{ post.created_at|naturaltime }}
-              </small>
-            </div>
-          </div>
-
-          {% if post.created_by == user %}
-            <span class="badge bg-success">
-              <i class="bi bi-check-circle"></i> Created by you
-            </span>
+            src="{% static 'image/imageuser.png' %}"
           {% endif %}
+          class="rounded-circle me-3"
+          width="50"
+          height="50"
+          style="object-fit: cover;"
+        >
+        <div>
+          <h6 class="mb-0">{{ post.created_by.username }}</h6>
+          <small class="text-muted">
+            Posté {{ post.created_at|naturaltime }}
+          </small>
         </div>
-
-      <!-- CONTENT -->
-      <p class="fs-6 mb-3">
-        {{ post.message }}
-      </p>
-      <p class="text-muted small"> Dans post <strong>• 7 commentaires</strong>  </p>
-      <!-- FOOTER -->
-      <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex gap-3">          
-                <button class="btn btn-sm btn-outline-danger">
-                  <i class="bi bi-heart"></i> Like
-                </button>  
-                <button class="btn btn-sm btn-outline-primary">
-                              <i class="bi bi-chat"></i> Comment
-                </button>
-            </div>
-            {% if post.created_by == user %}
-              <a href="#" class="btn btn-sm btn-outline-success">
-                <i class="bi bi-pencil-square"></i> Modifier
-              </a>
-            {% endif %} 
       </div>
+
+      {% if post.created_by == user %}
+        <span class="badge bg-success">
+          <i class="bi bi-check-circle"></i> You
+        </span>
+      {% endif %}
+    </div>
+
+    <!-- CONTENT -->
+    <p class="mb-3">{{ post.message }}</p>
+
+    <!-- FOOTER ACTIONS -->
+    <div class="d-flex justify-content-between align-items-center">
+
+      <div class="d-flex gap-3 align-items-center">
+
+
+
+        <!-- LIKE -->
+<form method="post" action="{% url 'toggle_like' post.id %}">
+  {% csrf_token %}
+  <button
+    type="submit"
+    class="btn btn-sm d-flex align-items-center gap-2
+    {% if post.liked_by_user %}
+      btn-danger
+    {% else %}
+      btn-outline-danger
+    {% endif %}
+    ">
+    <i class="bi {% if post.liked_by_user %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+    {{ post.likes_count }}
+  </button>
+</form>
+
+
+        <!-- COMMENT BUTTON -->
+        <button
+          class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
+          onclick="toggleComments('{{ post.id }}')">
+          <i class="bi bi-chat"></i>
+          Comment
+          <i id="icon-{{ post.id }}" class="bi bi-caret-right-fill"></i>
+        </button>
+
+      </div>
+
+      {% if post.created_by == user %}
+        <a href="#" class="btn btn-sm btn-outline-success">
+          <i class="bi bi-pencil-square"></i> Modifier
+        </a>
+      {% endif %}
+
     </div>
   </div>
 
-{% endfor %}
+  <!-- COMMENTS -->
+  <div id="comments-{{ post.id }}" class="card-footer bg-light d-none">
+
+    <p class="small text-muted mb-3">
+      <i class="bi bi-chat-dots"></i> Commentaires
+    </p>
+
+    {% for comment in post.comments.all %}
+    <div class="d-flex align-items-start mb-3">
+      <img
+        src="{% static 'image/imageuser.png' %}"
+        class="rounded-circle me-3"
+        width="36"
+        height="36"
+        style="object-fit: cover;"
+      >
+      <div class="flex-grow-1">
+        <div class="bg-white border rounded-3 px-3 py-2">
+          <div class="d-flex justify-content-between mb-1">
+            <strong class="small">{{ comment.user.username }}</strong>
+            <small class="text-muted">
+              {{ comment.created_at|naturaltime }}
+            </small>
+          </div>
+          <p class="small mb-0">{{ comment.content }}</p>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+      <p class="small text-muted">Aucun commentaire.</p>
+    {% endfor %}
+
+    <!-- ADD COMMENT -->
+    <form method="post" action="{% url 'add_comment' post.id %}" class="d-flex align-items-center mt-3">
+      {% csrf_token %}
+      <img
+        src="{% static 'image/imageuser.png' %}"
+        class="rounded-circle me-2"
+        width="32"
+        height="32"
+        style="object-fit: cover;"
+      >
+      <input
+        type="text"
+        name="content"
+        class="form-control form-control-sm"
+        placeholder="Ajouter un commentaire..."
+        required
+      >
+    </form>
+
+  </div>
+
 </div>
+{% endfor %}
+
+</div>
+
+<!-- JS -->
+<script>
+function toggleComments(postId) {
+  const comments = document.getElementById("comments-" + postId);
+  const icon = document.getElementById("icon-" + postId);
+
+  comments.classList.toggle("d-none");
+
+  if (comments.classList.contains("d-none")) {
+    icon.classList.remove("bi-caret-down-fill");
+    icon.classList.add("bi-caret-right-fill");
+  } else {
+    icon.classList.remove("bi-caret-right-fill");
+    icon.classList.add("bi-caret-down-fill");
+  }
+}
+</script>
 {% endblock %}
-
-
-
-

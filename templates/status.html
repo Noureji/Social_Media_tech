@@ -1,0 +1,32 @@
+{% load static %}
+
+{% if messages %}
+  {% for message in messages %}
+
+    {% if message.tags == 'error' %}
+      <!-- AUDIO ERROR -->
+      <audio autoplay>
+        <source src="{% static 'audio/erreur.mp3' %}">
+      </audio>
+      <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <div>{{ message }}</div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+      </div>
+
+    {% else %}
+      <!-- AUDIO SUCCESS -->
+      <audio autoplay>
+        <source src="{% static 'audio/succes.mp3' %}">
+      </audio>
+
+      <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <div>{{ message }}</div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+      </div>
+
+    {% endif %}
+
+  {% endfor %}
+{% endif %}

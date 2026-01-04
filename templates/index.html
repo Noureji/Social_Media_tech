@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %} Boards {% endblock %}
 {% block container_titre %} 
-
 <span class="text-primary fw-semibold">
   <i class="bi bi-collection-fill me-1"></i>
   <a href="/"
@@ -9,10 +8,6 @@
    Bordes
   </a>
 </span>
-
-
-
-
 {% endblock %}
 
 {% block container %}
@@ -20,10 +15,8 @@
   <div class="row g-4">
     {% for borde in bordes %}
     <div class="col-md-6 col-lg-4">
-
       <div class="card board-card h-100 shadow-sm border-0">
         <div class="card-body">
-
           <div class="d-flex align-items-center mb-3">
             <div class="icon-circle bg-primary text-white me-3">
                <i class="bi bi-kanban fs-4"></i>
@@ -34,24 +27,36 @@
               </a>
             </h5>
           </div>
-
           <p class="card-text text-muted">
             {{ borde.description|truncatewords:20 }}
           </p>
-
         </div>
-
         <div class="card-footer bg-white border-0">
           <a href="{% url 'show' borde.id %}" class="btn btn-outline-primary w-100">
             View Topics
           </a>
         </div>
       </div>
-
     </div>
     {% empty %}
-      <p class="text-muted">No boards available.</p>
-    {% endfor %}
+<div class="col-12">
+  <div class="card border-0 shadow-sm text-center p-5">
+    <div class="mb-3">
+      <i class="bi bi-kanban text-secondary fs-1"></i>
+    </div>
+    <h5 class="fw-bold">No boards yet</h5>
+    <p class="text-muted mb-4">
+      There are no boards available at the moment.
+    </p>
+
+    {% if user.is_authenticated and user.is_staff %}
+      <a href="{% url 'admin:index' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Create first board
+      </a>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
 
   </div>
 </div>

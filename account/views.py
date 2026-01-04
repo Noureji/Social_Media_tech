@@ -33,22 +33,27 @@ from .models import Profile
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+
+
 @login_required
-def profile(request):
+def profil(request):
     user = request.user
     profile = user.profile
 
-    if request.method == 'POST':
-        user.first_name = request.POST.get('first_name')
-        user.last_name = request.POST.get('last_name')
-        user.email = request.POST.get('email')
+    if request.method == "POST":
 
-        if request.FILES.get('avatar'):
-            profile.avatar = request.FILES['avatar']
-
+        # -------- USER --------
+        user.first_name = request.POST.get("first_name")
+        user.last_name = request.POST.get("last_name")
+        user.email = request.POST.get("email")
         user.save()
-        profile.save()
 
-        return redirect('profile')
+        # -------- PROFILE --------
+        if request.FILES.get("avatar"):
+            profile.avatar = request.FILES.get("avatar")
+            profile.save()
 
-    return render(request, 'profil.html')
+        messages.success(request, "Profil mis à jour avec succès ✅")
+        return redirect("profil")
+
+    return render(request, "profil.html")

@@ -7,9 +7,9 @@
 
   <span class="text-primary fw-semibold">
   <i class="bi bi-collection-fill me-1"></i>
-  <a href="{% url 'show' bord_id.id %}"
+  <a href="{% url 'show' board.id %}"
      class="text-decoration-none text-primary">
-    {{ bord_id.name}}
+    {{ board.name }}
   </a>
 </span>
 
@@ -27,14 +27,7 @@
 <form method="post">
   {% csrf_token %}
 
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-danger">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        {{ message }}
-      </div>
-    {% endfor %}
-  {% endif %}
+  {% include "status.html" %}
 
   <!-- SUBJECT -->
   <div class="mb-3">
@@ -52,7 +45,7 @@
       >
     </div>
     <div class="form-text">
-      We'll never share your subject with anyone else.
+     A clear subject makes your topic easier to understand and discuss.
     </div>
   </div>
 
@@ -78,6 +71,7 @@
     <i class="bi bi-send-fill"></i>
     Submit
   </button>
+  
 </form>
 
 {% endblock %}

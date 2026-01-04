@@ -9,5 +9,5 @@ urlpatterns = [
     path('login/' ,auth_view.LoginView.as_view(template_name='login.html'),name="login"),
     path('settings/changePas/',auth_view.PasswordChangeView.as_view(template_name='changePas.html'),name="changePas"),
     path('settings/password_change_done/',auth_view.PasswordChangeDoneView.as_view(template_name="done.html"),name='password_change_done'),
-    path('profil/' ,auth_view.LoginView.as_view(template_name='profil.html'),name="profil"),
+    path('profil/', views.profil, name="profil"),
 ]
