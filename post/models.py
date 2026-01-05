@@ -14,7 +14,7 @@ class Topic(models.Model):
     created_at =models.DateTimeField(auto_now_add=True)
 
 class Post(models.Model):
-    
+    views = models.PositiveIntegerField(default=0)
     message=models.TextField()
     topic = models.ForeignKey(Topic ,related_name='posts',on_delete=models.CASCADE)
     created_by =models.ForeignKey(User,related_name='Posts',on_delete=models.CASCADE)
@@ -50,3 +50,32 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.post.id}"
+    
+class Notification(models.Model):
+    NOTIFICATION_TYPES = (
+        ('like', 'Like'),
+        ('comment', 'Comment'),
+    )
+
+    to_user = models.ForeignKey(
+        User,
+        related_name='notifications',
+        on_delete=models.CASCADE
+    )
+    from_user = models.ForeignKey(
+        User,
+        related_name='sent_notifications',
+        on_delete=models.CASCADE
+    )
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    notification_type = models.CharField(
+        max_length=10,
+        choices=NOTIFICATION_TYPES
+    )
+
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.from_user} → {self.to_user} ({self.notification_type})"

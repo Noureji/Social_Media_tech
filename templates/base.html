@@ -20,18 +20,10 @@
     <link rel="stylesheet" href="{%static 'css/bootstrap.min.css' %}">
 </head>
 <body>
-        {% block soustitle %} 
-          <!-- pour chaque page peut etre changer les titres--> 
-        {% endblock %}
 
-        {% if user.is_authenticated %}   
 
             {%include 'navbar.html'%}     
 
-        {%else %}
-            {%include 'navbar.html'%}
-        {%endif%}
-   
 <fieldset class="border p-2 m-2 rounded">
   <legend class="float-none w-auto px-3 fw-bold">
             {% block container_titre %}

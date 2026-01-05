@@ -1,63 +1,120 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block title %} Boards {% endblock %}
-{% block container_titre %} 
+
+{% block container_titre %}
 <span class="text-primary fw-semibold">
-  <i class="bi bi-collection-fill me-1"></i>
-  <a href="/"
-     class="text-decoration-none text-primary">
-   Bordes
-  </a>
+  <i class="bi bi-collection-fill me-1"></i> Boards
 </span>
 {% endblock %}
 
 {% block container %}
 <div class="container mt-4">
+
+  <!-- 🔧 STAFF ACTION BAR -->
+  {% if user.is_authenticated and user.is_staff %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="mb-0 fw-bold text-dark">
+      <i class="bi bi-shield-lock-fill text-primary me-1"></i>
+      Administration Boards
+    </h5>
+    <a href="{% url 'admin:index' %}" class="btn btn-primary">
+      <i class="bi bi-plus-circle me-1"></i> Ajouter un Board
+    </a>
+  </div>
+  {% endif %}
+
+  <!-- 🧩 BOARDS GRID -->
   <div class="row g-4">
+
     {% for borde in bordes %}
     <div class="col-md-6 col-lg-4">
-      <div class="card board-card h-100 shadow-sm border-0">
+      <div class="card h-100 shadow-sm border-0">
+
+        <!-- CARD HEADER -->
         <div class="card-body">
-          <div class="d-flex align-items-center mb-3">
-            <div class="icon-circle bg-primary text-white me-3">
-               <i class="bi bi-kanban fs-4"></i>
+
+          <div class="d-flex justify-content-between align-items-start mb-3">
+
+            <div class="d-flex align-items-center">
+              <div class="bg-primary text-white rounded-circle d-flex
+                          align-items-center justify-content-center me-3"
+                   style="width:42px;height:42px;">
+                <i class="bi bi-kanban fs-5"></i>
+              </div>
+
+              <h5 class="mb-0 fw-bold">
+                <a href="{% url 'show' borde.id %}"
+                   class="text-decoration-none text-dark">
+                  {{ borde.name }}
+                </a>
+              </h5>
             </div>
-            <h5 class="card-title mb-0">
-              <a href="{% url 'show' borde.id %}" class="text-decoration-none">
-                {{ borde.name }}
-              </a>
-            </h5>
+
+            <!-- ⚙️ STAFF DROPDOWN -->
+            {% if user.is_authenticated and user.is_staff %}
+            <div class="dropdown">
+              <button class="btn btn-sm btn-light"
+                      data-bs-toggle="dropdown">
+                <i class="bi bi-three-dots-vertical"></i>
+              </button>
+
+              <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                <li>
+                  <a class="dropdown-item"
+                      href="#">
+                    <i class="bi bi-pencil-square me-1"></i> Modifier
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-danger"
+                     href="{% url 'board_delete' borde.id %}">
+                    <i class="bi bi-trash me-1"></i> Supprimer
+                  </a>
+                </li>
+              </ul>
+            </div>
+            {% endif %}
+
           </div>
-          <p class="card-text text-muted">
-            {{ borde.description|truncatewords:20 }}
+
+          <p class="text-muted small">
+            {{ borde.description|truncatewords:18 }}
           </p>
+
         </div>
+
+        <!-- CARD FOOTER -->
         <div class="card-footer bg-white border-0">
-          <a href="{% url 'show' borde.id %}" class="btn btn-outline-primary w-100">
-            View Topics
+          <a href="{% url 'show' borde.id %}"
+             class="btn btn-outline-primary w-100">
+            <i class="bi bi-eye me-1"></i> Voir les Topics
           </a>
         </div>
+
       </div>
     </div>
     {% empty %}
-<div class="col-12">
-  <div class="card border-0 shadow-sm text-center p-5">
-    <div class="mb-3">
-      <i class="bi bi-kanban text-secondary fs-1"></i>
+
+    <!-- EMPTY STATE -->
+    <div class="col-12">
+      <div class="card border-0 shadow-sm text-center p-5">
+        <i class="bi bi-kanban fs-1 text-secondary mb-3"></i>
+        <h5 class="fw-bold">Aucun board disponible</h5>
+        <p class="text-muted mb-4">
+          Les boards n'ont pas encore été créés.
+        </p>
+
+        {% if user.is_authenticated and user.is_staff %}
+        <a href="{% url 'admin:index' %}" class="btn btn-primary">
+          <i class="bi bi-plus-circle me-1"></i> Créer le premier board
+        </a>
+        {% endif %}
+      </div>
     </div>
-    <h5 class="fw-bold">No boards yet</h5>
-    <p class="text-muted mb-4">
-      There are no boards available at the moment.
-    </p>
 
-    {% if user.is_authenticated and user.is_staff %}
-      <a href="{% url 'admin:index' %}" class="btn btn-primary">
-        <i class="bi bi-plus-circle me-1"></i> Create first board
-      </a>
-    {% endif %}
-  </div>
-</div>
-{% endfor %}
-
+    {% endfor %}
   </div>
 </div>
 {% endblock %}

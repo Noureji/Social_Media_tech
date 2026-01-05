@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block container %}
+
+<div class="container mt-5 text-center">
+  <div class="card shadow-sm p-4">
+    <h5 class="fw-bold text-danger mb-3">
+      Supprimer le board
+    </h5>
+
+    <p>Confirmer la suppression de :</p>
+    <strong>{{ board.name }}</strong>
+
+    <form method="post" class="mt-4">
+      {% csrf_token %}
+      <a href="/" class="btn btn-secondary">
+        Annuler
+      </a>
+      <button type="submit" class="btn btn-danger">
+        Supprimer
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

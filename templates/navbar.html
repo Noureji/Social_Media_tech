@@ -7,24 +7,12 @@
     <a class="navbar-brand d-flex align-items-center" href="/">
       <img src="{% static 'image/logo.jpg' %}" alt="Logo" height="36"
            class="rounded-circle me-2">
-      
     </a>
-
-    <!-- TOGGLER -->
-    <button class="navbar-toggler" type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#mainNavbar"
-            aria-controls="mainNavbar"
-            aria-expanded="false"
-            aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
     <!-- NAV CONTENT -->
     <div class="collapse navbar-collapse" id="mainNavbar">
 
       <!-- LEFT MENU -->
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav me-auto">
 
         <li class="nav-item">
           <a class="nav-link active" href="/">
@@ -32,38 +20,90 @@
           </a>
         </li>
 
-{% if user.is_authenticated and request.resolver_match.url_name != 'index' %}
-<li class="nav-item ">
-  <a class="nav-link active" href="#">
-    <i class="bi bi-collection-fill"></i> Topic
-  </a>
-</li>
-{% endif %}
-
-
+        {% if user.is_authenticated and request.resolver_match.url_name != 'index' %}
+        <li class="nav-item">
+          <a class="nav-link  active" href="#">
+            <i class="bi bi-collection-fill"></i> Topic
+          </a>
+        </li>
+        {% endif %}
       </ul>
 
       <!-- RIGHT MENU -->
       <ul class="navbar-nav ms-auto align-items-center">
 
         {% if user.is_authenticated %}
+
+        <!-- NOTIFICATIONS -->
+        <li class="nav-item dropdown me-3">
+          <a class="nav-link position-relative"
+             href="#"
+             role="button"
+             data-bs-toggle="dropdown">
+
+            <i class="bi bi-bell fs-5"></i>
+
+            {% if notifications_count > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle
+                         badge rounded-pill bg-danger">
+              {{ notifications_count }}
+            </span>
+            {% endif %}
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end shadow"
+              style="width:320px">
+
+            <li class="dropdown-header fw-bold">
+              Notifications
+            </li>
+
+            {% if notifications %}
+              {% for n in notifications %}
+              <li>
+                <a class="dropdown-item small"
+                   href="{% url 'tobishow' n.post.topic.bord.id n.post.topic.id %}">
+                  {% if n.notification_type == 'like' %}
+                    ❤️ <strong>{{ n.from_user.username }}</strong>
+                    a aimé votre post
+                  {% else %}
+                    💬 <strong>{{ n.from_user.username }}</strong>
+                    a commenté votre post
+                  {% endif %}
+                </a>
+              </li>
+              {% endfor %}
+            {% else %}
+              <li class="dropdown-item text-muted small">
+                Aucune notification
+              </li>
+            {% endif %}
+          </ul>
+        </li>
+
         <!-- USER DROPDOWN -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle d-flex align-items-center"
              href="#" role="button" data-bs-toggle="dropdown">
-            <img   id="avatarPreview"
-                 {% if user.profile.avatar %}
-                   src="{{ user.profile.avatar.url }}"
-                 {% else %}
-                   src="{% static 'image/imageuser.png'%}"
-                 {% endif %} alt="Logo" height="36"
-           class="rounded-circle me-2">
+
+            <img
+  {% if user.profile.avatar %}
+    src="{{ user.profile.avatar.url }}"
+  {% else %}
+    src="{% static 'image/imageuser.png' %}"
+  {% endif %}
+  class="rounded-circle me-2 border border-2 border-primary shadow-m"
+  width="38"
+  height="38"
+  
+  style="object-fit: cover; transition: 1.8s;">
+
             {{ user.username }}
           </a>
-        
+
           <ul class="dropdown-menu dropdown-menu-end shadow">
             <li>
-              <a class="dropdown-item" href="{% url 'profil'%}">
+              <a class="dropdown-item" href="{% url 'profil' %}">
                 <i class="bi bi-person-circle"></i> Profile
               </a>
             </li>
@@ -76,7 +116,8 @@
             <li>
               <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
-                <button type="submit" class="dropdown-item text-danger">
+                <button type="submit"
+                        class="dropdown-item text-danger">
                   <i class="bi bi-box-arrow-right"></i> Logout
                 </button>
               </form>
@@ -85,7 +126,8 @@
         </li>
 
         {% else %}
-        <!-- AUTH LINKS -->
+
+        <!-- AUTH -->
         <li class="nav-item">
           <a class="nav-link" href="{% url 'login' %}">
             <i class="bi bi-box-arrow-in-right"></i> Login
@@ -96,8 +138,8 @@
             <i class="bi bi-person-plus-fill"></i> Register
           </a>
         </li>
-        {% endif %}
 
+        {% endif %}
       </ul>
     </div>
   </div>
