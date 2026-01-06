@@ -6,17 +6,29 @@
 
 {% block container_titre %}
 <div class="d-flex align-items-center flex-wrap mb-4">
+
   <a href="{% url 'show' board.id %}"
      class="text-info fw-semibold text-decoration-none d-flex align-items-center">
     <i class="bi bi-kanban-fill me-1 fs-5"></i> {{ board.name }}
   </a>
+
   <span class="mx-2 text-muted">›</span>
+
   <i class="bi bi-chat-dots-fill me-1 text-info"></i>
   <span class="fw-semibold">{{ tobic.subject }}</span>
 
   <span class="badge bg-warning-subtle text-dark ms-3 d-flex align-items-center gap-1 shadow-sm">
     <i class="bi bi-chat-left-text"></i> {{ posts.count }} Posts
   </span>
+
+  {% if user.is_authenticated %}
+  <button class="btn btn-info btn-sm ms-3 shadow-sm"
+          data-bs-toggle="modal"
+          data-bs-target="#modal-{{ tobic.id }}">
+    <i class="bi bi-plus-circle me-1"></i> Ajouter un post
+  </button>
+  {% endif %}
+
 </div>
 {% endblock %}
 
@@ -33,19 +45,20 @@
 
   <!-- POSTS -->
   {% for post in posts %}
-
   <div class="card mb-4 rounded-4 shadow-sm
-      {% if post.created_by == user %}border-success{% else %}border-info{% endif %}">
+      {% if post.created_by == user %}border-dark{% else %}border-info{% endif %}">
+
     <div class="card-body">
 
       <!-- HEADER -->
       <div class="d-flex justify-content-between align-items-start mb-3">
         <div class="d-flex align-items-center gap-3">
+
           <img
             {% if post.created_by.profile.avatar %}
               src="{{ post.created_by.profile.avatar.url }}"
             {% else %}
-              src="{% static 'image/imageuser.png' %}"
+              src="{% static 'image/imageuser.png' %}
             {% endif %}
             class="rounded-circle border border-2 border-light shadow-sm"
             width="50" height="50" style="object-fit: cover;">
@@ -56,6 +69,7 @@
               <i class="bi bi-clock"></i> {{ post.created_at|naturaltime }}
             </small>
           </div>
+
         </div>
 
         {% if post.created_by == user %}
@@ -103,20 +117,21 @@
           </button>
         </form>
         {% endif %}
+
       </div>
     </div>
 
-    <!-- COMMENTS LIST -->
-    <div id="comments-{{ post.id }}"
-         class="card-footer bg-light d-none rounded-bottom">
+    <!-- COMMENTS -->
+    <div id="comments-{{ post.id }}" class="card-footer bg-light d-none">
 
       {% for comment in post.comments.all %}
       <div class="d-flex gap-2 mb-3">
+
         <img
           {% if comment.user.profile.avatar %}
             src="{{ comment.user.profile.avatar.url }}"
           {% else %}
-            src="{% static 'image/imageuser.png' %}"
+            src="{% static 'image/imageuser.png' %}
           {% endif %}
           class="rounded-circle"
           width="36" height="36">
@@ -124,15 +139,14 @@
         <div class="bg-white border rounded-3 p-2 flex-grow-1">
           <div class="d-flex justify-content-between">
             <strong>{{ comment.user.username }}</strong>
-            <small class="text-muted">
-              {{ comment.created_at|naturaltime }}
-            </small>
+            <small class="text-muted">{{ comment.created_at|naturaltime }}</small>
           </div>
           <p class="mb-0 small">{{ comment.content }}</p>
         </div>
+
       </div>
       {% empty %}
-        <p class="text-muted small">Aucun commentaire</p>
+      <p class="text-muted small">Aucun commentaire</p>
       {% endfor %}
 
       <!-- ADD COMMENT -->
@@ -149,38 +163,78 @@
 
     </div>
   </div>
-
   {% empty %}
 
-  <!-- EMPTY STATE -->
+  <!-- EMPTY -->
   <div class="card shadow-sm border-0 rounded-4">
     <div class="card-body text-center py-5">
-
       <i class="bi bi-chat-square-dots display-4 text-muted mb-3"></i>
-
       <h5 class="fw-bold">Aucun post pour le moment</h5>
-      <p class="text-muted mb-4">
-        Soyez le premier à lancer la discussion 💬
-      </p>
+      <p class="text-muted mb-4">Soyez le premier à lancer la discussion 💬</p>
 
       {% if user.is_authenticated %}
-      <a href="#add-post" class="btn btn-primary rounded-pill px-4">
+      <button class="btn btn-primary rounded-pill px-4"
+              data-bs-toggle="modal"
+              data-bs-target="#modal-{{ tobic.id }}">
         <i class="bi bi-plus-circle"></i> Créer un post
-      </a>
+      </button>
       {% else %}
       <a href="{% url 'login' %}" class="btn btn-outline-primary rounded-pill px-4">
         Se connecter
       </a>
       {% endif %}
-
     </div>
   </div>
 
   {% endfor %}
-
 </div>
 
-<!-- JS -->
+<!-- MODAL ADD POST -->
+<div class="modal fade" id="modal-{{ tobic.id }}" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-pencil-square me-1"></i>
+          Nouveau post : {{ tobic.subject }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white"
+                data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form method="post" action="{% url 'create_post' tobic.id %}">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Sujet</label>
+            <input type="text" class="form-control"
+                   value="{{ tobic.subject }}" disabled>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Message</label>
+            <textarea class="form-control"
+                      name="message"
+                      rows="4"
+                      required></textarea>
+          </div>
+
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">Fermer</button>
+            <button type="submit" class="btn btn-info">
+              <i class="bi bi-send-fill me-1"></i> Publier
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 function toggleComments(id) {
   const box = document.getElementById('comments-' + id);
