@@ -1,49 +1,53 @@
 {% extends "base.html" %}
-{% block title %} Update Password {% endblock %}
-{% block soustitle %} 
-{% load widget_tweaks %}                        
-{% endblock %} 
+{% load widget_tweaks %}
 
-{% block container_titre %} 
-Update Password 
-{% endblock %}
+{% block title %}Update Password{% endblock %}
+{% block container_titre %}Update Password{% endblock %}
 
-{% block container %}     
-<div class="d-flex justify-content-center align-items-center min-vh-75">
-  <div class="card shadow-lg p-4 rounded-4 w-100" style="max-width: 450px; background: linear-gradient(145deg, #ffffff, #f8f9fa);">
-    <h4 class="card-title mb-4 text-center text-primary">Update Password</h4>
+{% block container %}
+<div class="d-flex justify-content-center align-items-center min-vh-75 py-5">
+  <div class="card shadow-lg rounded-4 w-100" style="max-width: 450px; background: linear-gradient(145deg, #ffffff, #f8f9fa);">
+    
+    <!-- Titre -->
+    <div class="card-body p-4">
+      <h4 class="card-title text-center text-primary fw-bold mb-4">Update Password</h4>
 
-    {% if form.non_field_errors %}
+      <!-- Non-field errors -->
+      {% if form.non_field_errors %}
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         {% for error in form.non_field_errors %}
-          {{ error }}
+          {{ error }}<br>
         {% endfor %}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-    {% endif %}
-
-<form method="POST" novalidate>
-  {% csrf_token %}
-  {% for elm in form %}
-    <div class="mb-3">
-      {{ elm.label_tag }}  <!-- juste le label, pas de filtre ici -->
-      {{ elm|add_class:"form-control form-control-lg" }}
-      {% if elm.errors %}
-        <div class="text-danger mt-1 small">
-          {% for error in elm.errors %}
-            {{ error }}
-          {% endfor %}
-        </div>
       {% endif %}
-    </div>
-  {% endfor %}
 
-  <div class="d-grid">
-    <button type="submit" class="btn btn-primary btn-lg">
-      <i class="bi bi-lock-fill me-2"></i> Update
-    </button>
-  </div>
-</form>
+      <!-- Formulaire -->
+      <form method="POST" novalidate>
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="mb-3">
+          {{ field.label_tag }}
+          {{ field|add_class:"form-control form-control-lg" }}
+          {% if field.errors %}
+          <div class="text-danger mt-1 small">
+            {% for error in field.errors %}
+              {{ error }}<br>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+
+        <!-- Bouton Submit -->
+        <div class="d-grid mt-3">
+          <button type="submit" class="btn btn-primary btn-lg fw-bold">
+            <i class="bi bi-lock-fill me-2"></i> Update Password
+          </button>
+        </div>
+      </form>
+    </div>
 
   </div>
 </div>

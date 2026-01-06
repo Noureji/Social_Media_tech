@@ -1,124 +1,155 @@
 {% load static %}
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+{% load humanize %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
   <div class="container">
 
     <!-- LOGO -->
-    <a class="navbar-brand d-flex align-items-center" href="/">
-      <img src="{% static 'image/logo.jpg' %}" alt="Logo" height="36"
-           class="rounded-circle me-2">
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/">
+      <img src="{% static 'image/logo.jpg' %}"
+           alt="Logo"
+           width="38"
+           height="38"
+           class="rounded-circle border border-2 border-light">
+      <span class="d-none d-md-inline">MyApp</span>
     </a>
-    <!-- NAV CONTENT -->
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
     <div class="collapse navbar-collapse" id="mainNavbar">
 
-      <!-- LEFT MENU -->
-      <ul class="navbar-nav me-auto">
-
+      <!-- LEFT -->
+      <ul class="navbar-nav me-auto gap-1">
         <li class="nav-item">
-          <a class="nav-link active" href="/">
-            <i class="bi bi-house-door-fill"></i> Boards
+          <a class="nav-link fw-semibold" href="/">
+            <i class="bi bi-house-door-fill me-1"></i> Boards
           </a>
         </li>
 
         {% if user.is_authenticated and request.resolver_match.url_name != 'index' %}
         <li class="nav-item">
-          <a class="nav-link  active" href="#">
-            <i class="bi bi-collection-fill"></i> Topic
+          <a class="nav-link fw-semibold" href="#">
+            <i class="bi bi-collection-fill me-1"></i> Topic
           </a>
         </li>
         {% endif %}
       </ul>
 
-      <!-- RIGHT MENU -->
-      <ul class="navbar-nav ms-auto align-items-center">
+      <!-- RIGHT -->
+      <ul class="navbar-nav ms-auto align-items-center gap-2">
 
         {% if user.is_authenticated %}
 
         <!-- NOTIFICATIONS -->
-        <li class="nav-item dropdown me-3">
-          <a class="nav-link position-relative"
-             href="#"
-             role="button"
-             data-bs-toggle="dropdown">
+<li class="nav-item dropdown">
+  <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown">
 
-            <i class="bi bi-bell fs-5"></i>
+    <i class="bi bi-bell fs-5"></i>
 
-            {% if notifications_count > 0 %}
-            <span class="position-absolute top-0 start-100 translate-middle
-                         badge rounded-pill bg-danger">
-              {{ notifications_count }}
-            </span>
-            {% endif %}
-          </a>
+    {% if notifications_count > 0 %}
+      <span
+        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow">
+        {{ notifications_count }}
+      </span>
+    {% endif %}
 
-          <ul class="dropdown-menu dropdown-menu-end shadow"
-              style="width:320px">
+  </a>
 
-            <li class="dropdown-header fw-bold">
-              Notifications
-            </li>
+  <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 p-2"
+      style="width: 340px;">
 
-            {% if notifications %}
-              {% for n in notifications %}
-              <li>
-                <a class="dropdown-item small"
-                   href="{% url 'tobishow' n.post.topic.bord.id n.post.topic.id %}">
-                  {% if n.notification_type == 'like' %}
-                    ❤️ <strong>{{ n.from_user.username }}</strong>
-                    a aimé votre post
-                  {% else %}
-                    💬 <strong>{{ n.from_user.username }}</strong>
-                    a commenté votre post
-                  {% endif %}
-                </a>
-              </li>
-              {% endfor %}
+    <li class="dropdown-header fw-bold text-center text-primary">
+      Notifications
+    </li>
+
+    {% for n in notifications %}
+    <li>
+      <a class="dropdown-item d-flex align-items-start gap-3 py-2 rounded-3"
+         href="{% url 'tobishow' n.post.topic.bord.id n.post.topic.id %}">
+
+        <!-- IMAGE USER -->
+        <img
+          {% if n.from_user.profile.avatar %}
+            src="{{ n.from_user.profile.avatar.url }}"
+          {% else %}
+            src="{% static 'image/imageuser.png' %}"
+          {% endif %}
+          class="rounded-circle border shadow-sm"
+          width="42" height="42"
+          style="object-fit: cover;"
+        >
+
+        <!-- TEXT -->
+        <div class="flex-grow-1 small">
+          <div class="fw-semibold">
+            {{ n.from_user.username }}
+            {% if n.notification_type == 'like' %}
+              <span class="text-danger">❤️</span>
             {% else %}
-              <li class="dropdown-item text-muted small">
-                Aucune notification
-              </li>
+              <span class="text-primary">💬</span>
             {% endif %}
-          </ul>
+          </div>
+
+          <div class="text-muted">
+            {% if n.notification_type == 'like' %}
+              a aimé votre post
+            {% else %}
+              a commenté votre post
+            {% endif %}
+          </div>
+
+          <div class="text-muted small">
+            {{ n.created_at|naturaltime }}
+          </div>
+        </div>
+
+      </a>
+    </li>
+    {% empty %}
+      <li class="dropdown-item text-center text-muted small py-3">
+        Aucune notification
+      </li>
+    {% endfor %}
+  </ul>
+
+
         </li>
 
-        <!-- USER DROPDOWN -->
+        <!-- USER -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center"
-             href="#" role="button" data-bs-toggle="dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+             data-bs-toggle="dropdown">
 
             <img
-  {% if user.profile.avatar %}
-    src="{{ user.profile.avatar.url }}"
-  {% else %}
-    src="{% static 'image/imageuser.png' %}"
-  {% endif %}
-  class="rounded-circle me-2 border border-2 border-primary shadow-m"
-  width="38"
-  height="38"
-  
-  style="object-fit: cover; transition: 1.8s;">
+              {% if user.profile.avatar %}
+                src="{{ user.profile.avatar.url }}"
+              {% else %}
+                src="{% static 'image/imageuser.png' %}" {% endif %} class="rounded-circle me-2 border border-2 border-primary shadow-m" width="38" height="38" style="object-fit: cover; transition: 1.8s;">
 
-            {{ user.username }}
+            <span class="fw-semibold d-none d-md-inline">
+              {{ user.username }}
+            </span>
           </a>
 
-          <ul class="dropdown-menu dropdown-menu-end shadow">
+          <ul class="dropdown-menu dropdown-menu-end shadow rounded-3">
             <li>
               <a class="dropdown-item" href="{% url 'profil' %}">
-                <i class="bi bi-person-circle"></i> Profile
+                <i class="bi bi-person-circle me-2"></i> Profile
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="{% url 'changePas' %}">
-                <i class="bi bi-gear-fill"></i> Change password
+                <i class="bi bi-gear-fill me-2"></i> Change password
               </a>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
-                <button type="submit"
-                        class="dropdown-item text-danger">
-                  <i class="bi bi-box-arrow-right"></i> Logout
+                <button class="dropdown-item text-danger">
+                  <i class="bi bi-box-arrow-right me-2"></i> Logout
                 </button>
               </form>
             </li>
@@ -127,15 +158,15 @@
 
         {% else %}
 
-        <!-- AUTH -->
         <li class="nav-item">
           <a class="nav-link" href="{% url 'login' %}">
-            <i class="bi bi-box-arrow-in-right"></i> Login
+            <i class="bi bi-box-arrow-in-right me-1"></i> Login
           </a>
         </li>
         <li class="nav-item">
-          <a class="btn btn-primary ms-2" href="{% url 'signup' %}">
-            <i class="bi bi-person-plus-fill"></i> Register
+          <a class="btn btn-primary rounded-pill px-3"
+             href="{% url 'signup' %}">
+            Register
           </a>
         </li>
 

@@ -1,86 +1,51 @@
-
-
- body{
-  background: linear-gradient(120deg, #f0f4ff, #fdfbfb);
-}
- fieldset{
-  background: linear-gradient(120deg, #f0f4ff, #b0b2c1);
-}
-
-.topic-card {
-  border-radius: 20px;
-  animation: fadeUp 0.8s ease;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.topic-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-}
-
-.topic-title {
-  font-weight: bold;
-}
-
-.btn-like {
-  background: #ffe6ea;
-  color: #e0245e;
-  border-radius: 50px;
-  transition: all 0.3s;
-}
-
-.btn-like:hover {
-  background: #e0245e;
-  color: #fff;
-  transform: scale(1.05);
-}
-
-.btn-comment {
-  background: #e7f1ff;
-  color: #0d6efd;
-  border-radius: 50px;
-}
-
-.comment-card {
-  border-radius: 20px;
-  animation: fadeUp 1s ease;
-}
-
-.comment {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 15px;
-}
-
-.comment p {
-  margin: 0;
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.board-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.board-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-}
-
-.icon-circle {
-  width: 45px;
-  height: 45px;
+.icon-box {
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.2rem;
 }
+
+
+
+form p {
+  margin-bottom: 1rem;
+}
+
+form label {
+  font-weight: 500;
+}
+
+form input, form select, form textarea {
+  border-radius: 8px;
+}
+.user-avatar {
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #0d6efd;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.user-avatar:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 4px rgba(13,110,253,.3);
+}
+
+.navbar .nav-link:hover {
+  opacity: .85;
+}
+.card {
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+
+textarea.form-control {
+  resize: none;
+}
+
