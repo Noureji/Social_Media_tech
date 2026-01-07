@@ -20,14 +20,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-a(qh@zw5o#f5qsmr8l6a6dm&w*v%$1%jj#wwex5hj1_p-$ms+^'
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "unsafe-dev-key-change-this"
+)
+
 import os
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
 ALLOWED_HOSTS = ["*", ".railway.app"]
 
 
@@ -48,7 +52,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-     "django.middleware.security.SecurityMiddleware",
+     
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -130,8 +134,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+if DEBUG:
+    STATICFILES_DIRS = [BASE_DIR / "static"]
 
-STATIC_URL = '/static/'
 STATICFILES_DIRS=[os.path.join(BASE_DIR,'static'),]
 
 LOGOUT_REDIRECT_URL = 'index'
